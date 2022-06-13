@@ -26,6 +26,12 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    // Constant number to load each time we want to load more posts
+    private static final int loadRate = 5;
+
+    // Number to skip when loading more posts
+    private int skipVal;
+
     // Elements in the application
     private Button btnLogout;
     private Toolbar tbMain;
@@ -38,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
     PostsAdapter adapter;
     private SwipeRefreshLayout swipeContainer;
+    LinearLayoutManager layoutManager;
 
 
     @Override
@@ -53,8 +60,13 @@ public class MainActivity extends AppCompatActivity {
         tbMain = (Toolbar) findViewById(R.id.tbMain);
         setSupportActionBar(tbMain);
 
+        // Initialize the posts
+        Posts = new ArrayList<>();
+
         // Query the posts and save them to the Posts list
+        skipVal = 0;
         queryPosts();
+
 
 
 
@@ -73,9 +85,11 @@ public class MainActivity extends AppCompatActivity {
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                // Your code to refresh the list here.
-                // Make sure you call swipeContainer.setRefreshing(false)
-                // once the network request has completed successfully.
+                // Clear out all old posts
+                Posts = new ArrayList<>();
+                skipVal = 0;
+
+                // Get all posts
                 queryPosts();
                 swipeContainer.setRefreshing(false);
             }
@@ -91,9 +105,6 @@ public class MainActivity extends AppCompatActivity {
 
     // Get posts that a user has created
     private void queryPosts() {
-        // Clear out all old posts
-        Posts = new ArrayList<>();
-
         // Specify which class to query
         ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
 
@@ -103,8 +114,11 @@ public class MainActivity extends AppCompatActivity {
         // Have the newest posts on top
         query.orderByDescending("updatedAt");
 
-        // Set the limit to 20 posts
-        query.setLimit(20);
+        // Skip some posts
+        query.setSkip(skipVal*loadRate);
+
+        // Set the limit to loadRate posts
+        query.setLimit(loadRate);
 
         // Find all the posts the user has created
         query.findInBackground(new FindCallback<Post>() {
@@ -119,14 +133,31 @@ public class MainActivity extends AppCompatActivity {
                 // Store all posts in the Posts list
                 Posts.addAll(posts);
 
-                // When the posts have been loaded, setup the recycler view -->
-                // Bind the adapter to the recycler view
-                adapter = new PostsAdapter(Posts, MainActivity.this);
-                rvPosts.setAdapter(adapter);
+                // Setup the recycler view if it isn't setup
+                if (rvPosts.getAdapter() == null) {
 
-                // Configure the Recycler View: Layout Manager
-                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(MainActivity.this);
-                rvPosts.setLayoutManager(linearLayoutManager);
+                    // When the posts have been loaded, setup the recycler view -->
+                    // Bind the adapter to the recycler view
+                    adapter = new PostsAdapter(Posts, MainActivity.this);
+                    rvPosts.setAdapter(adapter);
+
+                    // Configure the Recycler View: Layout Manager
+                    layoutManager = new LinearLayoutManager(MainActivity.this);
+                    rvPosts.setLayoutManager(layoutManager);
+
+                    // Used for infinite scrolling
+                    rvPosts.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
+                        @Override
+                        public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                            queryPosts();
+                        }
+                    });
+                }
+
+                adapter.notifyDataSetChanged();
+
+                // Increase the skip value
+                skipVal+=1;
             }
         });
     }
