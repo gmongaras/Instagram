@@ -100,6 +100,9 @@ public class MainActivity extends AppCompatActivity {
         // Include data from the user table
         query.include(Post.KEY_USER);
 
+        // Have the newest posts on top
+        query.orderByDescending("updatedAt");
+
         // Set the limit to 20 posts
         query.setLimit(20);
 

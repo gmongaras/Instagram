@@ -1,6 +1,7 @@
 package com.example.instagram;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,6 +47,17 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
 
         // Bind the post to the view holder
         holder.bind(post);
+
+        // Put an onClick listener on the view to go into the detailed view
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Context context = v.getContext();
+                Intent i = new Intent(context, DetailedPost.class);
+                i.putExtra("Post", post);
+                context.startActivity(i);
+            }
+        });
     }
 
     // Get the number of posts in the recycler view
@@ -74,7 +86,12 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
         public void bind(Post post) {
             // Bind the text data
             post_username.setText(post.getUser().getUsername());
-            post_desc.setText(post.getDescription());
+            if (post.getDescription().length() > 50) {
+                post_desc.setText(post.getDescription().substring(0, 50) + "...");
+            }
+            else {
+                post_desc.setText(post.getDescription());
+            }
 
             // Bind the image data if it's not null
             Glide.with(context)
