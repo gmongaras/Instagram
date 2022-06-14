@@ -10,9 +10,10 @@
         android:id="@+id/ivReply_det"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:layout_marginStart="75dp"
+        android:layout_marginStart="50dp"
         app:layout_constraintBottom_toBottomOf="@+id/ivLike_det"
-        app:layout_constraintStart_toEndOf="@+id/ivLike_ct_det"
+        app:layout_constraintEnd_toEndOf="@+id/det_image"
+        app:layout_constraintStart_toEndOf="@+id/ivLike_det"
         app:layout_constraintTop_toTopOf="@+id/ivLike_det"
         app:srcCompat="@drawable/reply"
         tools:srcCompat="@drawable/reply" />
