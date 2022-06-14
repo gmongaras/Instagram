@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.example.instagram.EndlessRecyclerViewScrollListener;
 import com.example.instagram.Post;
@@ -38,6 +39,7 @@ public class HomeFragment extends Fragment {
 
     // Elements in the application
     private RecyclerView rvPosts;
+    private ProgressBar pb;
 
     private static final String TAG = "HomeFragment";
 
@@ -61,6 +63,7 @@ public class HomeFragment extends Fragment {
 
         // Get the elements
         rvPosts = view.findViewById(R.id.rvPosts);
+        pb = view.findViewById(R.id.pbLoading);
 
         // Initialize the posts
         Posts = new ArrayList<>();
@@ -94,6 +97,8 @@ public class HomeFragment extends Fragment {
 
     // Get posts that a user has created
     private void queryPosts() {
+        pb.setVisibility(ProgressBar.VISIBLE);
+
         // Specify which class to query
         ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
 
@@ -147,6 +152,8 @@ public class HomeFragment extends Fragment {
 
                 // Increase the skip value
                 skipVal+=1;
+
+                pb.setVisibility(ProgressBar.INVISIBLE);
             }
         });
     }

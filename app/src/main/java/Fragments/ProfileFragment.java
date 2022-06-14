@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.instagram.EndlessRecyclerViewScrollListener;
@@ -155,6 +156,8 @@ public class ProfileFragment extends Fragment {
 
         // If the user sent back an image
         if ((data != null) && requestCode == 21) {
+            Toast.makeText(getContext(), "Uploading image...", Toast.LENGTH_SHORT).show();
+
             // Get the URI of the image
             Uri photoUri = data.getData();
 
@@ -186,15 +189,19 @@ public class ProfileFragment extends Fragment {
                                             .error(R.drawable.default_pfp)
                                             .circleCrop()
                                             .into(prof_pfp);
+
+                                    Toast.makeText(getContext(), "Upload Success!", Toast.LENGTH_SHORT).show();
                                 }
                                 else {
                                     Log.e(TAG, "File upload issue", e);
+                                    Toast.makeText(getContext(), "Upload Failed :(", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
                     }
                     else {
                         Log.e(TAG, "File Save Issue", e);
+                        Toast.makeText(getContext(), "Upload Failed :(", Toast.LENGTH_SHORT).show();
                     }
                 }
             });

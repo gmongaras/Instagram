@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.instagram.Post;
@@ -43,6 +44,7 @@ public class ComposeFragment extends Fragment {
     private Button btnCaptureImage;
     private ImageView ivPostImage;
     private Button btnSubmit;
+    private ProgressBar progressBar;
 
     private File photoFile; // Variable to save a photo to
     public String photoFileName = "photo.jpg"; // Name of file to save a photo to
@@ -62,6 +64,7 @@ public class ComposeFragment extends Fragment {
         btnCaptureImage = view.findViewById(R.id.btnCaptureImage);
         ivPostImage = view.findViewById(R.id.ivPostImage);
         btnSubmit = view.findViewById(R.id.btnSubmit);
+        progressBar = view.findViewById(R.id.progressBar);
 
 
 
@@ -117,6 +120,8 @@ public class ComposeFragment extends Fragment {
 
     // Save a new post to the database
     private void savePost(String description, ParseUser user, File photoFile) {
+        progressBar.setVisibility(ProgressBar.VISIBLE);
+
         // Create the post object and set the information
         Post post = new Post();
         post.setDescription(description);
@@ -142,6 +147,8 @@ public class ComposeFragment extends Fragment {
 
                 // Go back to the main activity
                 //finish();
+
+                progressBar.setVisibility(ProgressBar.INVISIBLE);
             }
         });
     }

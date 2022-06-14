@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.parse.FindCallback;
@@ -120,7 +121,7 @@ public class PostActivity extends AppCompatActivity {
                 ivPostImage.setImageResource(0);
 
                 // Go back to the main activity
-                finish();
+                //finish();
             }
         });
     }
