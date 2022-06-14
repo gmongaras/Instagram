@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.parse.ParseFile;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.util.List;
@@ -103,7 +104,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
                     .into(post_image);
 
             // Bind the profile picture data
-            Object img = ParseUser.getCurrentUser().get("pfp_img");
+            Object img = post.getUser().get("pfp_img");
             if (img == null) {
                 Glide.with(context)
                         .load(R.drawable.default_pfp)

@@ -2,10 +2,7 @@ package Fragments;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.ImageDecoder;
-import android.graphics.Picture;
-import android.media.MediaParser;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,7 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -22,25 +18,19 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.BitmapResource;
 import com.example.instagram.EndlessRecyclerViewScrollListener;
-import com.example.instagram.FileUtils;
 import com.example.instagram.Post;
-import com.example.instagram.PostActivity;
-import com.example.instagram.PostsAdapter;
 import com.example.instagram.ProfPostsAdapter;
 import com.example.instagram.R;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
-import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
@@ -124,6 +114,8 @@ public class ProfileFragment extends Fragment {
         prof_pfp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                prof_pfp.setClickable(false);
+
                 Intent intent = new Intent(Intent.ACTION_PICK,
                         MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(intent, 21);
@@ -166,22 +158,26 @@ public class ProfileFragment extends Fragment {
             // Get the URI of the image
             Uri photoUri = data.getData();
 
-            // Load the image located at photoUri into selectedImage
+            // Load the image at the URI into a bitmap
             Bitmap selectedImage = loadFromUri(photoUri);
             selectedImage = Bitmap.createScaledBitmap(selectedImage, 200, 200, true);
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             selectedImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
             byte[] bitmapBytes = stream.toByteArray();
 
+            // Save the image so we can use it in Parse
             ParseFile imageFile = new ParseFile("pfp_img", bitmapBytes);
             imageFile.saveInBackground(new SaveCallback() {
                 @Override
                 public void done(ParseException e) {
+                    // If the image was successfully saved
                     if (e == null) {
+                        // Add the image to the profile
                         ParseUser.getCurrentUser().put("pfp_img", imageFile);
                         ParseUser.getCurrentUser().saveInBackground(new SaveCallback() {
                             @Override
                             public void done(ParseException e) {
+                                // If the image was saved,
                                 if (e == null) {
                                     // When the image is saved, display it
                                     Object img = ParseUser.getCurrentUser().get("pfp_img");
@@ -204,6 +200,8 @@ public class ProfileFragment extends Fragment {
             });
         }
 
+        prof_pfp.setClickable(true);
+
 
     }
 
@@ -224,23 +222,6 @@ public class ProfileFragment extends Fragment {
             e.printStackTrace();
         }
         return image;
-    }
-
-
-    // Returns the File for a photo stored on disk given the fileName
-    public File getPhotoFileUri(String fileName) {
-        // Get safe storage directory for photos
-        // Use `getExternalFilesDir` on Context to access package-specific directories.
-        // This way, we don't need to request external read/write runtime permissions.
-        File mediaStorageDir = new File(getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES), TAG);
-
-        // Create the storage directory if it does not exist
-        if (!mediaStorageDir.exists() && !mediaStorageDir.mkdirs()){
-            Log.d(TAG, "failed to create directory");
-        }
-
-        // Return the file target for the photo based on filename
-        return new File(mediaStorageDir.getPath() + File.separator + fileName);
     }
 
     // Get posts that a user has created
