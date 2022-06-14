@@ -69,18 +69,27 @@ public class ComposeFragment extends Fragment {
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Make the button unclickable
+                btnSubmit.setClickable(false);
+
                 // Get the post details
                 String description = etDescription.getText().toString();
 
                 // Error handling with the description
                 if (description.isEmpty()) {
                     Toast.makeText(view.getContext(), "Description cannot be empty", Toast.LENGTH_SHORT).show();
+
+                    // Make the button clickable
+                    btnSubmit.setClickable(true);
                     return;
                 }
 
                 // Error handling with the photo
                 if (photoFile == null || ivPostImage.getDrawable() == null) {
                     Toast.makeText(view.getContext(), "There is no image!", Toast.LENGTH_SHORT).show();
+
+                    // Make the button clickable
+                    btnSubmit.setClickable(true);
                     return;
                 }
 
@@ -91,6 +100,9 @@ public class ComposeFragment extends Fragment {
                 savePost(description, currentUser, photoFile);
 
                 Toast.makeText(view.getContext(), "Post saved!", Toast.LENGTH_SHORT).show();
+
+                // Make the button clickable
+                btnSubmit.setClickable(true);
             }
         });
 

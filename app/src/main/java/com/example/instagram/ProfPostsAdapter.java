@@ -12,20 +12,18 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.parse.ParseFile;
-import com.parse.ParseUser;
 
 import java.util.List;
 
-public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> {
+public class ProfPostsAdapter extends RecyclerView.Adapter<ProfPostsAdapter.ViewHolder> {
     // The posts in the recycler view
     List<Post> Posts;
 
     Context context;
-    private static final String TAG = "PostsAdapter";
+    private static final String TAG = "ProfPostsAdapter";
 
     // Constructor to create the adapter with context and a list
-    public PostsAdapter(List<Post> posts, Context context) {
+    public ProfPostsAdapter(List<Post> posts, Context context) {
         Posts = posts;
         this.context = context;
     }
@@ -33,9 +31,9 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
     // When a new view holder is created
     @NonNull
     @Override
-    public PostsAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ProfPostsAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // Create the view and inflate it
-        View view = LayoutInflater.from(context).inflate(R.layout.item_post, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.prof_item_post, parent, false);
 
         // Return the view
         return new ViewHolder(view);
@@ -43,7 +41,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
 
     // Given a position in the Recycler View, bind data to that element
     @Override
-    public void onBindViewHolder(@NonNull PostsAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ProfPostsAdapter.ViewHolder holder, int position) {
         // Get the item at the given position
         Post post = Posts.get(position);
 
@@ -71,51 +69,31 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
     // The view holder to hold each post
     public class ViewHolder extends RecyclerView.ViewHolder {
         // The elements in the view holder
-        TextView post_username;
-        ImageView post_image;
-        TextView post_desc;
-        ImageView post_pfp;
+        ImageView prof_post_image;
+        TextView prof_post_desc;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             // Get the element contents
-            post_username = itemView.findViewById(R.id.post_username);
-            post_image = itemView.findViewById(R.id.prof_post_image);
-            post_desc = itemView.findViewById(R.id.prof_post_desc);
-            post_pfp = itemView.findViewById(R.id.post_pfp);
+            prof_post_image = itemView.findViewById(R.id.prof_post_image);
+            prof_post_desc = itemView.findViewById(R.id.prof_post_desc);
         }
 
         // Given a post, bind data to this object
         public void bind(Post post) {
             // Bind the text data
-            post_username.setText(post.getUser().getUsername());
             if (post.getDescription().length() > 50) {
-                post_desc.setText(post.getDescription().substring(0, 50) + "...");
+                prof_post_desc.setText(post.getDescription().substring(0, 50) + "...");
             }
             else {
-                post_desc.setText(post.getDescription());
+                prof_post_desc.setText(post.getDescription());
             }
 
             // Bind the image data
             Glide.with(context)
                     .load(post.getImage().getUrl())
-                    .into(post_image);
-
-            // Bind the profile picture data
-            Object img = ParseUser.getCurrentUser().get("pfp_img");
-            if (img == null) {
-                Glide.with(context)
-                        .load(R.drawable.default_pfp)
-                        .into(post_pfp);
-            }
-            else {
-                Glide.with(context)
-                        .load(((ParseFile) img).getUrl())
-                        .error(R.drawable.default_pfp)
-                        .circleCrop()
-                        .into(post_pfp);
-            }
+                    .into(prof_post_image);
         }
     }
 

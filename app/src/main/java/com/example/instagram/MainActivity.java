@@ -32,6 +32,7 @@ import java.util.List;
 
 import Fragments.ComposeFragment;
 import Fragments.HomeFragment;
+import Fragments.ProfileFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -74,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
         // Fragments we can go to
         final Fragment Home = new HomeFragment();
         final Fragment Compose = new ComposeFragment();
+        final Fragment Profile = new ProfileFragment();
 
 
         // Allow clicks on the Bottom Navigation View
@@ -97,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
                     // If the menu item clicked is profile
                     case R.id.action_profile:
                         Toast.makeText(MainActivity.this, "Profile", Toast.LENGTH_SHORT).show();
+                        fragment = Profile;
                         break;
 
                     // If the id of logout has been tapped, log the user out

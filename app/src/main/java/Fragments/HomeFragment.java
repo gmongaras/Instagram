@@ -13,24 +13,18 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.example.instagram.EndlessRecyclerViewScrollListener;
-import com.example.instagram.LoginActivity;
-import com.example.instagram.MainActivity;
 import com.example.instagram.Post;
 import com.example.instagram.PostActivity;
 import com.example.instagram.PostsAdapter;
 import com.example.instagram.R;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
-import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -155,22 +149,5 @@ public class HomeFragment extends Fragment {
                 skipVal+=1;
             }
         });
-    }
-
-
-    // Handle clicks on the Toolbar
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            // Click on the create post icon
-            case R.id.miPost:
-                // When the post button is clicked, navigate to create a new post
-                Intent i = new Intent(getContext(), PostActivity.class);
-                startActivity(i);
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
-        }
     }
 }
