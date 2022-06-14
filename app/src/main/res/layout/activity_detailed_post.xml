@@ -7,9 +7,20 @@
     tools:context=".DetailedPost">
 
     <ImageView
+        android:id="@+id/ivReply_det"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="75dp"
+        app:layout_constraintBottom_toBottomOf="@+id/ivLike_det"
+        app:layout_constraintStart_toEndOf="@+id/ivLike_ct_det"
+        app:layout_constraintTop_toTopOf="@+id/ivLike_det"
+        app:srcCompat="@drawable/reply"
+        tools:srcCompat="@drawable/reply" />
+
+    <ImageView
         android:id="@+id/det_image"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="400dp"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="5dp"
         android:layout_marginRight="10dp"
@@ -22,31 +33,65 @@
         android:id="@+id/det_username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginStart="52dp"
+        android:textColor="@color/black"
         android:textSize="20sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/det_prof_image"
         app:layout_constraintStart_toStartOf="@+id/det_image"
-        app:layout_constraintTop_toBottomOf="@+id/det_time"
+        app:layout_constraintTop_toTopOf="@+id/det_prof_image"
         tools:text="username" />
 
     <TextView
         android:id="@+id/det_desc"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
+        android:textColor="@color/black"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="@+id/det_image"
         app:layout_constraintStart_toStartOf="@+id/det_image"
-        app:layout_constraintTop_toBottomOf="@+id/det_username"
+        app:layout_constraintTop_toBottomOf="@+id/det_prof_image"
         tools:text="Description" />
 
     <TextView
         android:id="@+id/det_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
+        android:layout_marginStart="36dp"
         android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="@+id/det_prof_image"
+        app:layout_constraintStart_toEndOf="@+id/det_username"
+        app:layout_constraintTop_toTopOf="@+id/det_prof_image"
+        app:layout_constraintVertical_bias="0.65"
+        tools:text="time" />
+
+    <ImageView
+        android:id="@+id/ivLike_det"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginLeft="100dp"
+        android:layout_marginTop="10dp"
         app:layout_constraintStart_toStartOf="@+id/det_image"
         app:layout_constraintTop_toBottomOf="@+id/det_image"
-        tools:text="time" />
+        tools:srcCompat="@drawable/like_active" />
+
+    <ImageView
+        android:id="@+id/det_prof_image"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="5dp"
+        app:layout_constraintStart_toStartOf="@+id/det_image"
+        app:layout_constraintTop_toBottomOf="@+id/ivLike_det"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/ivLike_ct_det"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintStart_toEndOf="@+id/ivLike_det"
+        app:layout_constraintTop_toTopOf="@+id/ivLike_det"
+        tools:text="10" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
+import com.parse.SignUpCallback;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -21,6 +22,10 @@ public class LoginActivity extends AppCompatActivity {
     private EditText etUsername;
     private EditText etPassword;
     private Button btnLogin;
+    private EditText etUsername_reg;
+    private EditText etPassword_reg;
+    private EditText etPassword_reg2;
+    private Button btnRegister;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +44,10 @@ public class LoginActivity extends AppCompatActivity {
         etUsername = findViewById(R.id.etUsername);
         etPassword = findViewById(R.id.etPassword);
         btnLogin = findViewById(R.id.btnLogin);
+        etUsername_reg = findViewById(R.id.etUsername_reg);
+        etPassword_reg = findViewById(R.id.etPassword_reg);
+        etPassword_reg2 = findViewById(R.id.etPassword_reg2);
+        btnRegister = findViewById(R.id.btnRegister);
 
         // Create an onclick listener for the Login button
         btnLogin.setOnClickListener(new View.OnClickListener() {
@@ -50,8 +59,57 @@ public class LoginActivity extends AppCompatActivity {
                 loginUser(username, password);
             }
         });
+
+        // Create an onClick listener for the Register button
+        btnRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                btnRegister.setClickable(false);
+                Log.i(TAG, "onClick register button");
+
+                // Send a toast if the passwords do not match
+                if (etPassword_reg.getText() == etPassword_reg2.getText()) {
+                    Toast.makeText(LoginActivity.this, "Passwords must match", Toast.LENGTH_SHORT).show();
+                    btnRegister.setClickable(true);
+                    return;
+                }
+
+                // Log the user in
+                String username = etUsername_reg.getText().toString();
+                String password = etPassword_reg.getText().toString();
+                registerUser(username, password);
+            }
+        });
     }
 
+
+    // Register a user to the app given the username and password
+    private void registerUser(String username, String password) {
+        Log.i(TAG, "Attempting to register user " + username);
+
+        // Create a new user
+        ParseUser user = new ParseUser();
+
+        // Fill in the user details
+        user.setUsername(username);
+        user.setPassword(password);
+
+        // Sign the user up
+        user.signUpInBackground(new SignUpCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e == null) {
+                    Toast.makeText(LoginActivity.this, "User Registered!", Toast.LENGTH_SHORT);
+                }
+                else {
+                    Log.e(TAG, "Unable to register user", e);
+                    Toast.makeText(LoginActivity.this, "Unable to register user", Toast.LENGTH_SHORT);
+                }
+            }
+        });
+
+        btnRegister.setClickable(true);
+    }
 
     // Login a user to the app given the username and password
     private void loginUser(String username, String password) {

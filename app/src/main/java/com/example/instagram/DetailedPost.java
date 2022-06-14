@@ -31,7 +31,7 @@ public class DetailedPost extends AppCompatActivity {
         Post post = (Post) getIntent().getExtras().get("Post");
 
         // Store the post text
-        det_time.setText(post.getCreatedAt().toString());
+        det_time.setText(MainActivity.getRelativeTimeAgo(post.getCreatedAt().toString()));
         det_username.setText(post.getUser().getUsername());
         det_desc.setText(post.getDescription());
 
