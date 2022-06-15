@@ -31,7 +31,7 @@ The following **stretch** features are implemented:
 - User Profiles:
   - [x] Allow the logged in user to add a profile photo
   - [x] Display the profile photo with each post
-  - [ ] Tapping on a post's username or profile photo goes to that user's profile page
+  - [x] Tapping on a post's username or profile photo goes to that user's profile page
   - [x] User Profile shows posts in a grid
 - [x] After the user submits a new post, show an indeterminate progress bar while the post is being uploaded to Parse
 - [x] User can comment on a post and see all comments for each post in the post details screen.
@@ -43,14 +43,14 @@ The following **additional** features are implemented:
 
 Please list two areas of the assignment you'd like to **discuss further with your peers** during the next class (examples include better ways to implement something, how to extend your app in certain ways, etc):
 
-1.
-2.
+1. How to add am image from the filesystem
+2. How to go to a different User's page through a reused fragment
 
 ## Video Walkthrough
 
 Here's a walkthrough of implemented user stories:
 
-<img src='http://i.imgur.com/link/to/your/gif/file.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='https://github.com/gmongaras/Instagram/blob/main/Demo.gif' title='Video Walkthrough' width='200' alt='Video Walkthrough' />
 
 GIF created with [Kap](https://getkap.co/).
 
@@ -62,6 +62,9 @@ List an 3rd party libraries, icons, graphics, or other assets you used in your a
 
 
 ## Notes
+
+- One of the biggest challeneges was adding a new profile image using a file already on the User's system. For some reason, after the user selected the image they wanted to use, the URI would be messed up.
+- When clicking on a username, I wanted to go to a fragment page with the User's details. I came up with a way to reuse the User fragment so that it is able to display both the current User as well as other users. When another user is shown, the user cannot upload a profile picture.
 
 Describe any challenges encountered while building the app.
 
