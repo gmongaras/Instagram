@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -49,6 +50,13 @@ public class HomeFragment extends Fragment {
     PostsAdapter adapter;
     private SwipeRefreshLayout swipeContainer;
     LinearLayoutManager layoutManager;
+
+    // Fragment manager from the main activity
+    public FragmentManager fragmentManager;
+
+    public HomeFragment(FragmentManager fragmentManager) {
+        this.fragmentManager = fragmentManager;
+    }
 
     @Nullable
     @Override
@@ -132,7 +140,7 @@ public class HomeFragment extends Fragment {
 
                     // When the posts have been loaded, setup the recycler view -->
                     // Bind the adapter to the recycler view
-                    adapter = new PostsAdapter(Posts, getContext());
+                    adapter = new PostsAdapter(Posts, getContext(), fragmentManager);
                     rvPosts.setAdapter(adapter);
 
                     // Configure the Recycler View: Layout Manager

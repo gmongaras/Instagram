@@ -5,32 +5,46 @@ import android.content.Intent;
 import android.graphics.Rect;
 import android.graphics.drawable.shapes.RoundRectShape;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.bottomnavigation.BottomNavigationItemView;
 import com.parse.ParseFile;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.util.List;
+import java.util.Objects;
+
+import Fragments.ProfileFragment;
 
 public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> {
     // The posts in the recycler view
     List<Post> Posts;
 
+    // The parent of the recycler view
+    private ViewGroup parent;
+
+    // Fragment manager for the home fragment
+    FragmentManager fragmentManager;
+
     Context context;
     private static final String TAG = "PostsAdapter";
 
     // Constructor to create the adapter with context and a list
-    public PostsAdapter(List<Post> posts, Context context) {
+    public PostsAdapter(List<Post> posts, Context context, FragmentManager fragmentManager) {
         Posts = posts;
         this.context = context;
+        this.fragmentManager = fragmentManager;
     }
 
     // When a new view holder is created
@@ -39,6 +53,9 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
     public PostsAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // Create the view and inflate it
         View view = LayoutInflater.from(context).inflate(R.layout.item_post, parent, false);
+
+        // Save the parent information
+        this.parent = parent;
 
         // Return the view
         return new ViewHolder(view);
@@ -119,6 +136,23 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
                         .circleCrop()
                         .into(post_pfp);
             }
+
+            // Put an onClick listener onto the username
+            post_username.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // When the username is clicked, change the fragment to
+                    // their user page
+                    Fragment fragment;
+                    if (Objects.equals(ParseUser.getCurrentUser().getUsername(), post.getUser().getUsername())) {
+                        fragment = new ProfileFragment("main", ParseUser.getCurrentUser());
+                    }
+                    else {
+                        fragment = new ProfileFragment("other", post.getUser());
+                    }
+                    fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
+                }
+            });
         }
     }
 

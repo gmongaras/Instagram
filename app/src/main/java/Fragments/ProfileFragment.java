@@ -41,11 +41,17 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ProfileFragment extends Fragment {
 
     // Constant number to load each time we want to load more posts
     private static final int loadRate = 20;
+
+    // The mode in which the fragement is in.
+    // main - The current user's profile is being viewed
+    // other - A different user's profile is being viewed
+    private String mode;
 
     // Constant number of columns in the Grid View
     private static final int NUMBER_OF_COLS = 2;
@@ -58,6 +64,9 @@ public class ProfileFragment extends Fragment {
     ImageView prof_pfp;
     TextView prof_username;
 
+    // The user to load the profile of
+    ParseUser user;
+
     private static final String TAG = "ProfileFragment";
 
     // Holds posts in the recycler view
@@ -67,6 +76,10 @@ public class ProfileFragment extends Fragment {
     private SwipeRefreshLayout swipeContainer;
     GridLayoutManager layoutManager;
 
+    public ProfileFragment(String mode, ParseUser user) {
+        this.mode = mode;
+        this.user = user;
+    }
 
     @Nullable
     @Override
@@ -93,8 +106,8 @@ public class ProfileFragment extends Fragment {
 
 
         // Setup the profile content
-        prof_username.setText(ParseUser.getCurrentUser().getUsername());
-        Object img = ParseUser.getCurrentUser().get("pfp_img");
+        prof_username.setText(user.getUsername());
+        Object img = user.get("pfp_img");
         if (img == null) {
             Glide.with(view.getContext())
                     .load(R.drawable.default_pfp)
@@ -111,17 +124,20 @@ public class ProfileFragment extends Fragment {
 
 
         // When the user profile picture is clicked, allow the
-        // user to upload a new profile picture
-        prof_pfp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                prof_pfp.setClickable(false);
+        // user to upload a new profile picture.
+        // Do this only if the mode is main
+        if (Objects.equals(mode, "main")) {
+            prof_pfp.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    prof_pfp.setClickable(false);
 
-                Intent intent = new Intent(Intent.ACTION_PICK,
-                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(intent, 21);
-            }
-        });
+                    Intent intent = new Intent(Intent.ACTION_PICK,
+                            MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    startActivityForResult(intent, 21);
+                }
+            });
+        }
 
 
 
@@ -176,14 +192,14 @@ public class ProfileFragment extends Fragment {
                     // If the image was successfully saved
                     if (e == null) {
                         // Add the image to the profile
-                        ParseUser.getCurrentUser().put("pfp_img", imageFile);
-                        ParseUser.getCurrentUser().saveInBackground(new SaveCallback() {
+                        user.put("pfp_img", imageFile);
+                        user.saveInBackground(new SaveCallback() {
                             @Override
                             public void done(ParseException e) {
                                 // If the image was saved,
                                 if (e == null) {
                                     // When the image is saved, display it
-                                    Object img = ParseUser.getCurrentUser().get("pfp_img");
+                                    Object img = user.get("pfp_img");
                                     Glide.with(getContext())
                                             .load(((ParseFile) img).getUrl())
                                             .error(R.drawable.default_pfp)
@@ -240,7 +256,7 @@ public class ProfileFragment extends Fragment {
         query.include(Post.KEY_USER);
 
         // Get only this user's posts
-        query.whereEqualTo("user", ParseUser.getCurrentUser());
+        query.whereEqualTo("user", user);
 
         // Have the newest posts on top
         query.orderByDescending("updatedAt");

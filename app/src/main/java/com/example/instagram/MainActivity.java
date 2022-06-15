@@ -75,9 +75,9 @@ public class MainActivity extends AppCompatActivity {
 
 
         // Fragments we can go to
-        final Fragment Home = new HomeFragment();
+        final Fragment Home = new HomeFragment(fragmentManager);
         final Fragment Compose = new ComposeFragment();
-        final Fragment Profile = new ProfileFragment();
+        final Fragment Profile = new ProfileFragment("main", ParseUser.getCurrentUser());
 
 
         // Allow clicks on the Bottom Navigation View
