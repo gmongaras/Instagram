@@ -2,7 +2,7 @@
 
 **Instagram** is a photo sharing app using Parse as its backend.
 
-Time spent: **X** hours spent in total
+Time spent: **30** hours spent in total
 
 ## User Stories
 
@@ -21,7 +21,7 @@ The following **required** functionality is completed:
 The following **stretch** features are implemented:
 
 - [x] Style the login page to look like the real Instagram login page.
-- [ ] Style the feed to look like the real Instagram feed.
+- [x] Style the feed to look like the real Instagram feed.
 - [x] User can load more posts once they reach the bottom of the feed using endless scrolling.
 - [x] User should switch between different tabs using fragments and a Bottom Navigation View.
   - [x] Feed Tab (to view all posts from all users)
