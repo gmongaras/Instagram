@@ -35,7 +35,7 @@ The following **stretch** features are implemented:
   - [x] User Profile shows posts in a grid
 - [x] After the user submits a new post, show an indeterminate progress bar while the post is being uploaded to Parse
 - [x] User can comment on a post and see all comments for each post in the post details screen.
-- [ ] User can like a post and see number of likes for each post in the post details screen.
+- [x] User can like a post and see number of likes for each post in the post details screen.
 
 The following **additional** features are implemented:
 
