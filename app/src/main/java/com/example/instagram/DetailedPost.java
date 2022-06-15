@@ -2,18 +2,35 @@ package com.example.instagram;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.parse.FindCallback;
+import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class DetailedPost extends AppCompatActivity {
+
+    // Constant number to load each time we want to load more posts
+    private static final int loadRate = 5;
+
+    // Number to skip when loading more posts
+    private int skipVal;
 
     private static final int REPLY_TAG = 90;
     private static final String TAG = "DetailedPost";
@@ -25,9 +42,17 @@ public class DetailedPost extends AppCompatActivity {
     TextView det_desc;
     ImageView det_prof_image;
     ImageView ivReply_det;
+    RecyclerView rvComments;
+
+    // The comments
+    List<Comment> comments;
 
     // The post information
     Post post;
+
+    CommAdapter adapter;
+    private SwipeRefreshLayout swipeContainer;
+    LinearLayoutManager layoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +66,10 @@ public class DetailedPost extends AppCompatActivity {
         det_desc = findViewById(R.id.det_desc);
         det_prof_image = findViewById(R.id.det_prof_image);
         ivReply_det = findViewById(R.id.ivReply_det);
+        rvComments = findViewById(R.id.rvComments);
+
+        // Initialize the comments list
+        comments = new ArrayList<>();
 
         // Get the information out of the post
         post = (Post) getIntent().getExtras().get("Post");
@@ -76,6 +105,76 @@ public class DetailedPost extends AppCompatActivity {
                 Intent i = new Intent(DetailedPost.this, ReplyActivity.class);
                 i.putExtra("post", post);
                 startActivityForResult(i, REPLY_TAG);
+            }
+        });
+
+        // Query for any comments that have been created
+        skipVal = 0;
+        queryComments();
+    }
+
+
+    // Get comments that have been created
+    private void queryComments() {
+        // Specify which class to query
+        ParseQuery<Comment> query = ParseQuery.getQuery(Comment.class);
+
+        // Include data from the user table
+        query.include(Comment.KEY_USER);
+
+        // Include data from the post
+        query.include(Comment.KEY_POST);
+
+        // Have the newest posts on top
+        query.orderByDescending("updatedAt");
+
+        // Filter only the current post.
+        query.whereEqualTo("post", post);
+
+        // Skip some posts
+        query.setSkip(skipVal*loadRate);
+
+        // Set the limit to loadRate posts
+        query.setLimit(loadRate);
+
+        // Find all the posts the user has created
+        query.findInBackground(new FindCallback<Comment>() {
+            @Override
+            public void done(List<Comment> comms, ParseException e) {
+                // If an error occurred, log an error
+                if (e != null) {
+                    Log.e(TAG, "Issue retrieving all posts", e);
+                    return;
+                }
+
+                // Store all posts in the Posts list
+                comments.addAll(comms);
+
+                // Setup the recycler view if it isn't setup
+                if (rvComments.getAdapter() == null) {
+
+                    // When the posts have been loaded, setup the recycler view -->
+                    // Bind the adapter to the recycler view
+                    adapter = new CommAdapter(comments, DetailedPost.this);
+                    rvComments.setAdapter(adapter);
+
+                    // Configure the Recycler View: Layout Manager
+                    layoutManager = new LinearLayoutManager(DetailedPost.this);
+                    rvComments.setLayoutManager(layoutManager);
+
+                    // Used for infinite scrolling
+                    rvComments.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
+                        @Override
+                        public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                            queryComments();
+                        }
+                    });
+                }
+
+                adapter.notifyDataSetChanged();
+
+                // Increase the skip value
+                skipVal+=1;
             }
         });
     }

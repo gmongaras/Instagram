@@ -30,10 +30,10 @@ public class Comment extends ParseObject {
     }
 
     // Getter and setter methods for the post
-    public String getPost() {
-        return getString(KEY_POST);
+    public ParseObject getPost() {
+        return getParseObject(KEY_POST);
     }
-    public void setPost(String post) {
+    public void setPost(Post post) {
         put(KEY_POST, post);
     }
 }
