@@ -20,9 +20,11 @@ import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class DetailedPost extends AppCompatActivity {
 
@@ -43,12 +45,22 @@ public class DetailedPost extends AppCompatActivity {
     ImageView det_prof_image;
     ImageView ivReply_det;
     RecyclerView rvComments;
+    ImageView ivLike_det;
+    TextView ivLike_ct_det;
+
+    // If the current user likes this post
+    boolean liked;
 
     // The comments
     List<Comment> comments;
 
     // The post information
     Post post;
+
+    // Strings containing this post and without this post for the
+    // liked feature
+    String with;
+    String without;
 
     CommAdapter adapter;
     private SwipeRefreshLayout swipeContainer;
@@ -67,12 +79,122 @@ public class DetailedPost extends AppCompatActivity {
         det_prof_image = findViewById(R.id.det_prof_image);
         ivReply_det = findViewById(R.id.ivReply_det);
         rvComments = findViewById(R.id.rvComments);
+        ivLike_det = findViewById(R.id.ivLike_det);
+        ivLike_ct_det = findViewById(R.id.ivLike_ct_det);
 
         // Initialize the comments list
         comments = new ArrayList<>();
 
         // Get the information out of the post
         post = (Post) getIntent().getExtras().get("Post");
+
+        // Get the current user
+        String userId = ParseUser.getCurrentUser().getObjectId();
+        ParseQuery<ParseUser> query = ParseQuery.getQuery(ParseUser.class);
+        query.whereEqualTo("objectId", userId);
+        query.findInBackground(new FindCallback<ParseUser>() {
+            @Override
+            public void done(List<ParseUser> objects, ParseException e) {
+                ParseUser user = objects.get(0);
+
+                // Get the liked posts
+                String[] liked_list = user.get("liked").toString().split(",");
+
+                // Iterate over the array to see if this post has been liked
+                liked = false;
+                for (String s : liked_list) {
+                    if (Objects.equals(s, post.getObjectId())) {
+                        liked = true;
+                        break;
+                    }
+                }
+
+                // Strings with and without this post
+                if (liked) {
+                    with = user.get("liked").toString();
+                    without = with.substring(0, with.indexOf(post.getObjectId())) + with.substring(with.indexOf(post.getObjectId())+post.getObjectId().length()+1);
+                }
+                else {
+                    without = user.get("liked").toString();
+                    with = without + post.getObjectId() + ",";
+                }
+
+                // When the user has been retreived, update the liked button
+                if (liked == true) {
+                    Glide.with(DetailedPost.this)
+                            .load(R.drawable.like_active)
+                            .into(ivLike_det);
+                }
+                else {
+                    Glide.with(DetailedPost.this)
+                            .load(R.drawable.like)
+                            .into(ivLike_det);
+                }
+
+                // Get the number of likes and update the like count
+                ivLike_ct_det.setText(String.valueOf(post.get("likes")));
+
+                // Put an onClick listiner to the liked button
+                ivLike_det.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // If the button is clicked, turn it off for the meantime
+                        ivLike_det.setClickable(false);
+
+                        // If the user already liked this post, unlike it
+                        if (liked == true) {
+                            // Update the count in the database
+                            post.increment("likes", -1);
+                            post.saveInBackground(new SaveCallback() {
+                                @Override
+                                public void done(ParseException e) {
+                                    // Update the user liked posts
+                                    user.put("liked", without);
+                                    user.saveInBackground(new SaveCallback() {
+                                        @Override
+                                        public void done(ParseException e) {
+                                            // When both the user and post have been updated in the
+                                            // backend, update the frontend.
+                                            Glide.with(DetailedPost.this)
+                                                    .load(R.drawable.like)
+                                                    .into(ivLike_det);
+                                            liked = false;
+                                            ivLike_ct_det.setText(String.valueOf(post.get("likes")));
+                                            ivLike_det.setClickable(true);
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                        // If the user hasn't liked this post, like it
+                        else {
+                            // Update the count in the database
+                            post.increment("likes", 1);
+                            post.saveInBackground(new SaveCallback() {
+                                @Override
+                                public void done(ParseException e) {
+                                    // Update the user liked posts
+                                    user.put("liked", with);
+                                    user.saveInBackground(new SaveCallback() {
+                                        @Override
+                                        public void done(ParseException e) {
+                                            // When both the user and post have been updated in the
+                                            // backend, update the frontend.
+                                            Glide.with(DetailedPost.this)
+                                                    .load(R.drawable.like_active)
+                                                    .into(ivLike_det);
+                                            liked = true;
+                                            ivLike_ct_det.setText(String.valueOf(post.get("likes")));
+                                            ivLike_det.setClickable(true);
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+        });
 
         // Store the post text
         det_time.setText(MainActivity.getRelativeTimeAgo(post.getCreatedAt().toString()));
