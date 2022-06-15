@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/black"
     tools:context=".LoginActivity">
 
     <com.google.android.material.textfield.TextInputEditText
@@ -16,6 +17,8 @@
         android:ems="10"
         android:hint="password"
         android:inputType="textPassword"
+        android:textColor="@color/white"
+        android:textColorHint="@color/grey"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etUsername_reg" />
@@ -30,9 +33,12 @@
         android:ems="10"
         android:hint="password again"
         android:inputType="textPassword"
+        android:textColor="@color/white"
+        android:textColorHint="@color/grey"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etPassword_reg" />
+        app:layout_constraintTop_toBottomOf="@+id/etPassword_reg"
+        tools:textColorHint="@color/grey" />
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/etPassword"
@@ -44,6 +50,8 @@
         android:ems="10"
         android:hint="password"
         android:inputType="textPassword"
+        android:textColor="@color/white"
+        android:textColorHint="@color/grey"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etUsername" />
@@ -56,9 +64,12 @@
         android:layout_marginTop="20dp"
         android:layout_marginRight="20dp"
         android:hint="username"
+        android:textColor="@color/white"
+        android:textColorHint="@color/grey"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        tools:textColorHint="@color/grey" />
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/etUsername_reg"
@@ -68,6 +79,8 @@
         android:layout_marginTop="75dp"
         android:layout_marginRight="20dp"
         android:hint="username"
+        android:textColor="@color/white"
+        android:textColorHint="@color/grey"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnLogin" />
@@ -77,7 +90,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
+        android:background="@color/blue"
         android:text="Login"
+        android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="@+id/etPassword"
         app:layout_constraintStart_toStartOf="@+id/etPassword"
         app:layout_constraintTop_toBottomOf="@+id/etPassword" />
@@ -87,9 +102,23 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
+        android:background="@color/blue"
         android:text="Register"
+        android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="@+id/etUsername_reg"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/etUsername_reg"
         app:layout_constraintTop_toBottomOf="@+id/etPassword_reg2" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="354dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="20dp"
+        android:src="@drawable/login_logo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.508"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@drawable/login_logo" />
 </androidx.constraintlayout.widget.ConstraintLayout>
